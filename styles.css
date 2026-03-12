@@ -1,0 +1,502 @@
+:root {
+  color-scheme: light;
+  --bg: #0d1914;
+  --surface: rgba(244, 233, 211, 0.1);
+  --surface-strong: rgba(250, 242, 226, 0.9);
+  --border: rgba(247, 223, 184, 0.18);
+  --text: #f8f0df;
+  --ink: #24170e;
+  --muted: rgba(248, 240, 223, 0.72);
+  --gold: #d1a44f;
+  --emerald: #2d9a6b;
+  --crimson: #bc5f49;
+  --shadow: 0 28px 70px rgba(0, 0, 0, 0.28);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(circle at top left, rgba(209, 164, 79, 0.16), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(45, 154, 107, 0.14), transparent 28%),
+    linear-gradient(180deg, #13231b 0%, #0d1914 100%);
+}
+
+.app-shell {
+  width: min(1320px, calc(100% - 28px));
+  margin: 0 auto;
+  padding: 24px 0 36px;
+  display: grid;
+  gap: 20px;
+}
+
+.hero-panel,
+.hero-side,
+.status-grid,
+.hud-row,
+.bottom-grid,
+.explainer-grid,
+.trump-actions,
+.table-center-top,
+.console-header,
+.console-actions,
+.seat-header,
+.hero-tags {
+  display: grid;
+  gap: 14px;
+}
+
+.hero-panel {
+  grid-template-columns: 1.2fr 0.95fr;
+  align-items: stretch;
+}
+
+.hero-copy,
+.glass-card,
+.table-felt {
+  border: 1px solid var(--border);
+  border-radius: 28px;
+  box-shadow: var(--shadow);
+}
+
+.hero-copy {
+  padding: 28px;
+  background:
+    radial-gradient(circle at top right, rgba(209, 164, 79, 0.18), transparent 32%),
+    linear-gradient(135deg, rgba(23, 42, 33, 0.92), rgba(14, 29, 22, 0.98));
+}
+
+.hero-side {
+  grid-template-columns: 1fr 1fr;
+}
+
+.glass-card {
+  padding: 20px;
+  background: rgba(248, 239, 222, 0.08);
+  backdrop-filter: blur(14px);
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+h1,
+h2,
+p,
+ul,
+ol {
+  margin: 0;
+}
+
+h1 {
+  font-size: clamp(2.9rem, 6vw, 5.4rem);
+  line-height: 0.88;
+  letter-spacing: -0.05em;
+  max-width: 8ch;
+}
+
+.hero-text {
+  margin-top: 18px;
+  max-width: 60ch;
+  line-height: 1.7;
+  color: var(--muted);
+  font-size: 1.06rem;
+}
+
+.hero-tags {
+  grid-template-columns: repeat(3, max-content);
+  margin-top: 22px;
+}
+
+.hero-tags span,
+.token-ribbon span {
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(247, 223, 184, 0.14);
+  background: rgba(248, 239, 222, 0.06);
+}
+
+.status-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.status-grid article,
+.explainer-grid article {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(248, 239, 222, 0.08);
+  border: 1px solid rgba(247, 223, 184, 0.12);
+}
+
+.status-grid span,
+.subtle,
+.rules-list,
+.explainer-grid p,
+.event-log {
+  color: var(--muted);
+}
+
+.status-grid strong,
+.team-card strong,
+.center-card strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 1.5rem;
+}
+
+.rules-list {
+  padding-left: 18px;
+  line-height: 1.6;
+}
+
+.hud-row {
+  grid-template-columns: 240px 1fr 240px;
+}
+
+.team-card,
+.center-card {
+  text-align: center;
+}
+
+.team-card strong {
+  font-size: 2.4rem;
+}
+
+.table-shell {
+  min-width: 0;
+}
+
+.table-felt {
+  position: relative;
+  padding: 20px;
+  min-height: 760px;
+  background:
+    radial-gradient(circle at center, rgba(31, 122, 90, 0.26), transparent 36%),
+    linear-gradient(180deg, #123425 0%, #0c2419 100%);
+  overflow: hidden;
+}
+
+.table-felt::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(247, 223, 184, 0.08);
+  border-radius: 24px;
+  pointer-events: none;
+}
+
+.token-ribbon {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.seat {
+  position: absolute;
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+
+.north {
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(580px, 62%);
+}
+
+.south {
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(760px, 78%);
+}
+
+.west {
+  left: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 116px;
+}
+
+.east {
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 116px;
+}
+
+.seat-header {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 0 4px;
+}
+
+.seat-header small {
+  color: var(--muted);
+}
+
+.hand {
+  display: flex;
+  gap: 8px;
+  min-height: 94px;
+  min-width: 0;
+}
+
+.fan-top {
+  justify-content: center;
+}
+
+.fan-side {
+  flex-direction: column;
+  align-items: center;
+}
+
+.hand-player {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.table-center {
+  position: absolute;
+  inset: 180px 50% 180px 50%;
+  transform: translateX(-50%);
+  width: min(440px, calc(100% - 280px));
+  display: grid;
+  gap: 16px;
+  background: rgba(245, 236, 222, 0.88);
+  color: var(--ink);
+}
+
+.table-center .eyebrow,
+.table-center .turn-banner,
+.table-center p {
+  color: rgba(36, 23, 14, 0.7);
+}
+
+.table-center-top {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.trick-layout {
+  position: relative;
+  min-height: 260px;
+}
+
+.play-slot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+}
+
+.north-slot {
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.south-slot {
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.west-slot {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.east-slot {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.turn-banner {
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgba(36, 23, 14, 0.06);
+  font-weight: 600;
+}
+
+.trump-picker {
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(36, 23, 14, 0.06);
+}
+
+.trump-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 12px;
+}
+
+button {
+  border: 1px solid rgba(247, 223, 184, 0.16);
+  border-radius: 999px;
+  padding: 11px 14px;
+  background: rgba(248, 239, 222, 0.08);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+button:hover {
+  border-color: rgba(247, 223, 184, 0.32);
+  background: rgba(248, 239, 222, 0.14);
+}
+
+.table-center button {
+  background: rgba(36, 23, 14, 0.08);
+  color: var(--ink);
+  border-color: rgba(36, 23, 14, 0.12);
+}
+
+.bottom-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.console-actions {
+  grid-template-columns: repeat(2, max-content);
+}
+
+.event-log {
+  margin-top: 14px;
+  padding-left: 18px;
+  max-height: 260px;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+}
+
+.explainer-grid {
+  grid-template-columns: 1fr;
+  margin-top: 10px;
+}
+
+.card {
+  width: 72px;
+  height: 98px;
+  border-radius: 16px;
+  padding: 10px;
+  background: linear-gradient(180deg, #fffaf2 0%, #efe4cf 100%);
+  color: var(--ink);
+  border: 1px solid rgba(36, 23, 14, 0.1);
+  display: grid;
+  align-content: space-between;
+  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.card.back {
+  background:
+    radial-gradient(circle at top left, rgba(209, 164, 79, 0.24), transparent 26%),
+    linear-gradient(135deg, #1f3f31 0%, #152e23 100%);
+  color: #fff6e8;
+}
+
+.card.red {
+  color: var(--crimson);
+}
+
+.card.playable {
+  transform: translateY(-8px);
+  cursor: pointer;
+  box-shadow: 0 16px 22px rgba(0, 0, 0, 0.24);
+}
+
+.card.played {
+  width: 82px;
+  height: 112px;
+}
+
+.card-rank {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.card-suit {
+  justify-self: end;
+  font-size: 1.3rem;
+}
+
+.card-center {
+  justify-self: center;
+  align-self: center;
+  font-size: 1.55rem;
+}
+
+@media (max-width: 1120px) {
+  .hero-panel,
+  .hud-row,
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-side {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .table-center {
+    width: min(440px, calc(100% - 180px));
+  }
+}
+
+@media (max-width: 860px) {
+  .hero-side,
+  .status-grid,
+  .trump-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-tags,
+  .console-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .table-felt {
+    min-height: 980px;
+  }
+
+  .north {
+    width: min(520px, 74%);
+  }
+
+  .south {
+    width: min(760px, 92%);
+  }
+
+  .west,
+  .east {
+    top: auto;
+    bottom: 190px;
+    transform: none;
+    width: 92px;
+  }
+
+  .west {
+    left: 18px;
+  }
+
+  .east {
+    right: 18px;
+  }
+
+  .table-center {
+    inset: 210px 50% 260px 50%;
+    width: min(420px, calc(100% - 48px));
+  }
+}

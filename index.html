@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Omi Sinhala Card Game</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero-panel">
+        <div class="hero-copy">
+          <p class="eyebrow">Sri Lankan Trick-Taking</p>
+          <h1>Omi, rebuilt as a modern table experience.</h1>
+          <p class="hero-text">
+            Play the classic Sinhala partnership card game with smart trump choice, proper trick rules,
+            and a table designed to feel ceremonial, tactile, and alive.
+          </p>
+          <div class="hero-tags">
+            <span>32-card deck</span>
+            <span>Choose trump after 4 cards</span>
+            <span>Race to 10 tokens</span>
+          </div>
+        </div>
+
+        <div class="hero-side">
+          <section class="glass-card status-card">
+            <p class="eyebrow">Match state</p>
+            <div class="status-grid">
+              <article>
+                <span>Dealer</span>
+                <strong id="dealer-seat">--</strong>
+              </article>
+              <article>
+                <span>Trump</span>
+                <strong id="trump-suit">--</strong>
+              </article>
+              <article>
+                <span>Lead</span>
+                <strong id="lead-seat">--</strong>
+              </article>
+              <article>
+                <span>Score to win</span>
+                <strong>10</strong>
+              </article>
+            </div>
+          </section>
+
+          <section class="glass-card rules-card">
+            <p class="eyebrow">Core rules</p>
+            <ul class="rules-list">
+              <li>Four players in two teams, partners sitting opposite.</li>
+              <li>Trump is chosen after each player sees only four cards.</li>
+              <li>You must follow suit if you can.</li>
+              <li>Five to seven tricks scores 1 token for trump callers, 2 for defenders.</li>
+              <li>All 8 tricks scores 3 tokens, and a 4-4 tie carries a bonus token to the next winning hand.</li>
+            </ul>
+          </section>
+        </div>
+      </section>
+
+      <section class="hud-row">
+        <article class="glass-card team-card team-south">
+          <p class="eyebrow">Your team</p>
+          <strong id="team-human-score">0</strong>
+          <span class="subtle" id="team-human-tricks">0 tricks this hand</span>
+        </article>
+        <article class="glass-card center-card">
+          <p class="eyebrow">Hand status</p>
+          <strong id="phase-label">Setting table...</strong>
+          <p id="phase-copy" class="subtle">Shuffling the first hand.</p>
+        </article>
+        <article class="glass-card team-card team-north">
+          <p class="eyebrow">Opponents</p>
+          <strong id="team-ai-score">0</strong>
+          <span class="subtle" id="team-ai-tricks">0 tricks this hand</span>
+        </article>
+      </section>
+
+      <section class="table-shell">
+        <div class="table-felt">
+          <div class="token-ribbon">
+            <span id="carry-bonus">Carry bonus: 0</span>
+            <span id="hand-result">No hand scored yet.</span>
+          </div>
+
+          <section class="seat north">
+            <div class="seat-header">
+              <span>North</span>
+              <small id="north-state">Waiting</small>
+            </div>
+            <div class="hand fan-top" id="north-hand"></div>
+          </section>
+
+          <section class="seat west">
+            <div class="seat-header">
+              <span>West</span>
+              <small id="west-state">Waiting</small>
+            </div>
+            <div class="hand fan-side" id="west-hand"></div>
+          </section>
+
+          <section class="table-center glass-card">
+            <div class="table-center-top">
+              <div>
+                <p class="eyebrow">Trick</p>
+                <strong id="trick-count">0 / 8</strong>
+              </div>
+              <div>
+                <p class="eyebrow">Trump caller</p>
+                <strong id="caller-seat">--</strong>
+              </div>
+            </div>
+
+            <div class="trick-layout" id="trick-layout">
+              <div class="play-slot north-slot" data-seat-slot="north"></div>
+              <div class="play-slot west-slot" data-seat-slot="west"></div>
+              <div class="play-slot east-slot" data-seat-slot="east"></div>
+              <div class="play-slot south-slot" data-seat-slot="south"></div>
+            </div>
+
+            <div class="turn-banner" id="turn-banner">Preparing the first deal...</div>
+
+            <div class="trump-picker" id="trump-picker" hidden>
+              <p>Choose trump from your first four cards.</p>
+              <div class="trump-actions">
+                <button type="button" data-trump="spades">Spades</button>
+                <button type="button" data-trump="hearts">Hearts</button>
+                <button type="button" data-trump="clubs">Clubs</button>
+                <button type="button" data-trump="diamonds">Diamonds</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="seat east">
+            <div class="seat-header">
+              <span>East</span>
+              <small id="east-state">Waiting</small>
+            </div>
+            <div class="hand fan-side" id="east-hand"></div>
+          </section>
+
+          <section class="seat south">
+            <div class="seat-header">
+              <span>You</span>
+              <small id="south-state">Waiting</small>
+            </div>
+            <div class="hand hand-player" id="south-hand"></div>
+          </section>
+        </div>
+      </section>
+
+      <section class="bottom-grid">
+        <section class="glass-card console-card">
+          <div class="console-header">
+            <p class="eyebrow">Table console</p>
+            <div class="console-actions">
+              <button type="button" id="new-hand-button">New hand</button>
+              <button type="button" id="new-match-button">Restart match</button>
+            </div>
+          </div>
+          <ol class="event-log" id="event-log"></ol>
+        </section>
+
+        <section class="glass-card explainer-card">
+          <p class="eyebrow">Why Omi is special</p>
+          <div class="explainer-grid">
+            <article>
+              <strong>Mid-deal trump choice</strong>
+              <p>Unlike most trick-taking games, you commit to trump with only half your hand revealed.</p>
+            </article>
+            <article>
+              <strong>Defender pressure</strong>
+              <p>If defenders win the hand, they score more than the trump-calling side for a normal hand.</p>
+            </article>
+            <article>
+              <strong>Carry-over tension</strong>
+              <p>A 4-4 split pushes a bonus token into the next hand, which can swing a close match fast.</p>
+            </article>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
