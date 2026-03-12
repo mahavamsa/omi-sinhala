@@ -52,7 +52,7 @@ export function nextSeat(seat) {
   return SEATS[(SEATS.indexOf(seat) + 1) % SEATS.length];
 }
 
-export function seatLeftOfDealer(dealerSeat) {
+export function seatRightOfDealer(dealerSeat) {
   return nextSeat(dealerSeat);
 }
 
@@ -68,7 +68,7 @@ export function createInitialMatch(random = Math.random) {
 }
 
 export function createNewHand(dealerSeat, matchScore, carryBonus, random = Math.random) {
-  const declarerSeat = seatLeftOfDealer(dealerSeat);
+  const declarerSeat = seatRightOfDealer(dealerSeat);
   const shuffled = shuffleDeck(createDeck(), random);
   const firstFour = dealRound(shuffled, 0, 4);
   return {
