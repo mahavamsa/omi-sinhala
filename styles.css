@@ -38,6 +38,7 @@ body {
 
 .hero-panel,
 .hero-side,
+.hero-topline,
 .status-grid,
 .hud-row,
 .bottom-grid,
@@ -70,6 +71,11 @@ body {
   background:
     radial-gradient(circle at top right, rgba(209, 164, 79, 0.18), transparent 32%),
     linear-gradient(135deg, rgba(23, 42, 33, 0.92), rgba(14, 29, 22, 0.98));
+}
+
+.hero-topline {
+  grid-template-columns: 1fr auto;
+  align-items: center;
 }
 
 .hero-side {
@@ -124,6 +130,28 @@ h1 {
   border-radius: 999px;
   border: 1px solid rgba(247, 223, 184, 0.14);
   background: rgba(248, 239, 222, 0.06);
+}
+
+.language-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(247, 223, 184, 0.14);
+  background: rgba(248, 239, 222, 0.06);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.lang-button {
+  padding: 8px 12px;
+  min-width: 74px;
+}
+
+.lang-button.active {
+  background: rgba(209, 164, 79, 0.16);
+  border-color: rgba(209, 164, 79, 0.34);
 }
 
 .status-grid {
@@ -456,6 +484,7 @@ button:hover {
 }
 
 @media (max-width: 860px) {
+  .hero-topline,
   .hero-side,
   .status-grid,
   .trump-actions {

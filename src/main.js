@@ -1,23 +1,22 @@
 import {
   SEATS,
-  SUITS,
-  TEAMS,
   chooseAiCard,
   chooseAiTrump,
   chooseTrump,
   createInitialMatch,
+  formatTeamForLocale,
   getLegalCards,
   playCard,
-  startNextHand,
-  teamLabel
+  startNextHand
 } from "./omiLogic.js";
-
-const seatNames = {
-  south: "You",
-  west: "West",
-  north: "North",
-  east: "East"
-};
+import {
+  DEFAULT_LOCALE,
+  formatSeat,
+  formatSuit,
+  getPreferredLocale,
+  getStrings,
+  setPreferredLocale
+} from "./i18n.js";
 
 const handNodes = {
   south: document.querySelector("#south-hand"),
@@ -55,48 +54,81 @@ const trumpPickerNode = document.querySelector("#trump-picker");
 const eventLogNode = document.querySelector("#event-log");
 const newHandButton = document.querySelector("#new-hand-button");
 const newMatchButton = document.querySelector("#new-match-button");
+const localeButtons = document.querySelectorAll("[data-locale-switch]");
+const translatableNodes = document.querySelectorAll("[data-i18n]");
 
+let currentLocale = DEFAULT_LOCALE;
 let matchState = createInitialMatch();
+
+function strings() {
+  return getStrings(currentLocale);
+}
 
 function addEvent(message) {
   matchState.events = [message, ...matchState.events].slice(0, 14);
 }
 
+function applyStaticTranslations() {
+  const localeStrings = strings();
+  document.documentElement.lang = currentLocale;
+  document.title = localeStrings.pageTitle;
+
+  translatableNodes.forEach((node) => {
+    const key = node.dataset.i18n;
+    node.textContent = localeStrings.static[key];
+  });
+
+  document.querySelectorAll("[data-trump]").forEach((button) => {
+    button.textContent = formatSuit(button.dataset.trump, currentLocale);
+  });
+
+  localeButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.localeSwitch === currentLocale);
+  });
+}
+
 function render() {
   const hand = matchState.hand;
+  const localeStrings = strings();
 
-  dealerSeatNode.textContent = seatNames[matchState.dealerSeat];
-  trumpSuitNode.textContent = hand.trumpSuit ? titleCase(hand.trumpSuit) : "Pending";
-  leadSeatNode.textContent = seatNames[hand.currentTurn];
-  callerSeatNode.textContent = seatNames[hand.declarerSeat];
+  dealerSeatNode.textContent = formatSeat(matchState.dealerSeat, currentLocale);
+  trumpSuitNode.textContent = hand.trumpSuit ? formatSuit(hand.trumpSuit, currentLocale) : localeStrings.dynamic.pending;
+  leadSeatNode.textContent = formatSeat(hand.currentTurn, currentLocale);
+  callerSeatNode.textContent = formatSeat(hand.declarerSeat, currentLocale);
   trickCountNode.textContent = `${hand.trickCount} / 8`;
   teamHumanScoreNode.textContent = String(hand.matchScore.human);
   teamAiScoreNode.textContent = String(hand.matchScore.ai);
-  teamHumanTricksNode.textContent = `${hand.trickWins.human} tricks this hand`;
-  teamAiTricksNode.textContent = `${hand.trickWins.ai} tricks this hand`;
-  carryBonusNode.textContent = `Carry bonus: ${hand.carryBonus}`;
-  handResultNode.textContent = hand.handResult ? hand.handResult.resultLabel : "No hand scored yet.";
+  teamHumanTricksNode.textContent = localeStrings.dynamic.tricksThisHand(hand.trickWins.human);
+  teamAiTricksNode.textContent = localeStrings.dynamic.tricksThisHand(hand.trickWins.ai);
+  carryBonusNode.textContent = localeStrings.dynamic.carryBonus(hand.carryBonus);
+  handResultNode.textContent = hand.handResult ? hand.handResult.resultLabel : localeStrings.dynamic.noHandResult;
 
   if (hand.stage === "choose-trump") {
-    phaseLabelNode.textContent = hand.declarerSeat === "south" ? "Choose trump" : "AI is choosing trump";
+    phaseLabelNode.textContent =
+      hand.declarerSeat === "south" ? localeStrings.dynamic.phaseChooseTrump : localeStrings.dynamic.phaseAiChoosingTrump;
     phaseCopyNode.textContent =
       hand.declarerSeat === "south"
-        ? "You have seen your first four cards. Commit to a trump suit."
-        : `${seatNames[hand.declarerSeat]} is selecting trump from the first four cards.`;
+        ? localeStrings.dynamic.phaseChooseTrumpCopy
+        : localeStrings.dynamic.phaseAiChoosingTrumpCopy(formatSeat(hand.declarerSeat, currentLocale));
   } else if (hand.stage === "playing") {
-    phaseLabelNode.textContent = hand.currentTurn === "south" ? "Your move" : `${seatNames[hand.currentTurn]} to play`;
+    phaseLabelNode.textContent =
+      hand.currentTurn === "south"
+        ? localeStrings.dynamic.yourMove
+        : localeStrings.dynamic.seatToPlay(formatSeat(hand.currentTurn, currentLocale));
     phaseCopyNode.textContent = hand.leadSuit
-      ? `Lead suit is ${titleCase(hand.leadSuit)}. Follow suit if you can.`
-      : `${seatNames[hand.currentTurn]} leads this trick.`;
+      ? localeStrings.dynamic.followSuitCopy(formatSuit(hand.leadSuit, currentLocale))
+      : localeStrings.dynamic.leadCopy(formatSeat(hand.currentTurn, currentLocale));
   } else {
-    phaseLabelNode.textContent = hand.winningTeam ? `${teamLabel(hand.winningTeam)} win the match` : "Hand complete";
-    phaseCopyNode.textContent = hand.handResult?.resultLabel ?? "Ready for the next hand.";
+    phaseLabelNode.textContent = hand.winningTeam
+      ? localeStrings.dynamic.teamWinsMatch(formatTeamForLocale(hand.winningTeam, currentLocale))
+      : localeStrings.dynamic.handComplete;
+    phaseCopyNode.textContent = hand.handResult?.resultLabel ?? localeStrings.dynamic.readyNextHand;
   }
 
   turnBannerNode.textContent =
     hand.stage === "hand-over"
-      ? hand.handResult?.resultLabel ?? "Hand complete."
-      : `${seatNames[hand.currentTurn]} ${hand.currentTurn === "south" ? "are" : "is"} on turn.`;
+      ? hand.handResult?.resultLabel ?? localeStrings.dynamic.handComplete
+      : localeStrings.dynamic.turnBanner(formatSeat(hand.currentTurn, currentLocale), hand.currentTurn === "south");
 
   renderHands();
   renderTrick();
@@ -142,15 +174,17 @@ function renderTrick() {
 }
 
 function renderSeatStates() {
+  const localeStrings = strings();
   for (const seat of SEATS) {
     if (matchState.hand.stage === "hand-over") {
-      seatStateNodes[seat].textContent = seat === matchState.hand.lastTrickWinner ? "Last trick" : "Waiting";
+      seatStateNodes[seat].textContent =
+        seat === matchState.hand.lastTrickWinner ? localeStrings.seatStates.lastTrick : localeStrings.seatStates.waiting;
     } else if (matchState.hand.currentTurn === seat) {
-      seatStateNodes[seat].textContent = "On turn";
+      seatStateNodes[seat].textContent = localeStrings.seatStates.onTurn;
     } else if (matchState.hand.trickCards.some((entry) => entry.seat === seat)) {
-      seatStateNodes[seat].textContent = "Played";
+      seatStateNodes[seat].textContent = localeStrings.seatStates.played;
     } else {
-      seatStateNodes[seat].textContent = "Waiting";
+      seatStateNodes[seat].textContent = localeStrings.seatStates.waiting;
     }
   }
 }
@@ -195,6 +229,10 @@ function createCardElement(card, { hidden, playable, played }) {
   return button;
 }
 
+function cardLabel(card) {
+  return `${card.rank}${card.symbol}`;
+}
+
 function handlePlayerCard(cardId) {
   if (matchState.hand.currentTurn !== "south" || matchState.hand.stage !== "playing") {
     return;
@@ -205,8 +243,8 @@ function handlePlayerCard(cardId) {
     return;
   }
 
-  addEvent(`You played ${card.rank}${card.symbol}.`);
-  matchState.hand = playCard(matchState.hand, "south", cardId);
+  addEvent(strings().dynamic.youPlayed(cardLabel(card)));
+  matchState.hand = playCard(matchState.hand, "south", cardId, currentLocale);
   render();
   queueAiTurns();
 }
@@ -214,7 +252,7 @@ function handlePlayerCard(cardId) {
 function handleAiTrumpIfNeeded() {
   if (matchState.hand.stage === "choose-trump" && matchState.hand.declarerSeat !== "south") {
     const trumpSuit = chooseAiTrump(matchState.hand.hands[matchState.hand.declarerSeat]);
-    addEvent(`${seatNames[matchState.hand.declarerSeat]} chose ${titleCase(trumpSuit)} as trump.`);
+    addEvent(strings().dynamic.seatChoseTrump(formatSeat(matchState.hand.declarerSeat, currentLocale), formatSuit(trumpSuit, currentLocale)));
     matchState.hand = chooseTrump(matchState.hand, trumpSuit);
     render();
   }
@@ -232,8 +270,8 @@ function queueAiTurns() {
   window.setTimeout(() => {
     const seat = matchState.hand.currentTurn;
     const card = chooseAiCard(matchState.hand, seat);
-    addEvent(`${seatNames[seat]} played ${card.rank}${card.symbol}.`);
-    matchState.hand = playCard(matchState.hand, seat, card.id);
+    addEvent(strings().dynamic.seatPlayed(formatSeat(seat, currentLocale), cardLabel(card)));
+    matchState.hand = playCard(matchState.hand, seat, card.id, currentLocale);
     render();
 
     if (matchState.hand.stage === "hand-over") {
@@ -252,7 +290,7 @@ function startNewHand() {
     ...matchState,
     hand: startNextHand(matchState)
   };
-  addEvent(`New hand started. Dealer moved to ${seatNames[matchState.dealerSeat]}.`);
+  addEvent(strings().dynamic.newHandStarted(formatSeat(matchState.dealerSeat, currentLocale)));
   render();
   handleAiTrumpIfNeeded();
   queueAiTurns();
@@ -260,24 +298,31 @@ function startNewHand() {
 
 function restartMatch() {
   matchState = createInitialMatch();
-  addEvent("New match started. First to 10 tokens wins.");
+  addEvent(strings().dynamic.newMatchStarted);
   render();
   handleAiTrumpIfNeeded();
   queueAiTurns();
 }
 
-function titleCase(value) {
-  return value.charAt(0).toUpperCase() + value.slice(1);
+function setLocale(locale) {
+  currentLocale = locale;
+  setPreferredLocale(locale);
+  applyStaticTranslations();
+  render();
 }
 
 document.querySelectorAll("[data-trump]").forEach((button) => {
   button.addEventListener("click", () => {
     const trumpSuit = button.dataset.trump;
-    addEvent(`You chose ${titleCase(trumpSuit)} as trump.`);
+    addEvent(strings().dynamic.youChoseTrump(formatSuit(trumpSuit, currentLocale)));
     matchState.hand = chooseTrump(matchState.hand, trumpSuit);
     render();
     queueAiTurns();
   });
+});
+
+localeButtons.forEach((button) => {
+  button.addEventListener("click", () => setLocale(button.dataset.localeSwitch));
 });
 
 newHandButton.addEventListener("click", () => {
@@ -288,6 +333,8 @@ newHandButton.addEventListener("click", () => {
 
 newMatchButton.addEventListener("click", restartMatch);
 
-addEvent("Welcome to Omi. Dealer starts at your seat, and the player to dealer's left calls trump.");
+currentLocale = getPreferredLocale();
+applyStaticTranslations();
+addEvent(strings().dynamic.startMatch);
 render();
 handleAiTrumpIfNeeded();

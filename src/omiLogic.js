@@ -8,6 +8,8 @@ export const TEAMS = {
 };
 export const RANKS = ["A", "K", "Q", "J", "10", "9", "8", "7"];
 
+import { DEFAULT_LOCALE, formatTeam, getStrings } from "./i18n.js";
+
 const SUIT_SYMBOLS = {
   spades: "♠",
   hearts: "♥",
@@ -219,7 +221,8 @@ function comparePlayedCards(left, right, trumpSuit, leadSuit) {
   return left.value - right.value;
 }
 
-export function scoreHand(handState) {
+export function scoreHand(handState, locale = DEFAULT_LOCALE) {
+  const strings = getStrings(locale);
   const callerTeam = TEAMS[handState.declarerSeat];
   const defenderTeam = callerTeam === "human" ? "ai" : "human";
   const callerTricks = handState.trickWins[callerTeam];
@@ -230,23 +233,23 @@ export function scoreHand(handState) {
   let carryBonus = handState.carryBonus;
 
   if (callerTricks === 4 && defenderTricks === 4) {
-    resultLabel = "4-4 split. The next winning hand gets an extra token.";
+    resultLabel = strings.scoring.split;
     carryBonus += 1;
   } else {
     awardedTeam = callerTricks > defenderTricks ? callerTeam : defenderTeam;
     if (callerTricks === 8 || defenderTricks === 8) {
       awardedTokens = 3;
-      resultLabel = `${teamLabel(awardedTeam)} pulled a kapothi and won all 8 tricks.`;
+      resultLabel = strings.scoring.kapothi(formatTeam(awardedTeam, locale));
     } else if (awardedTeam === callerTeam) {
       awardedTokens = 1;
-      resultLabel = `${teamLabel(awardedTeam)} defended their trump call.`;
+      resultLabel = strings.scoring.defendedTrump(formatTeam(awardedTeam, locale));
     } else {
       awardedTokens = 2;
-      resultLabel = `${teamLabel(awardedTeam)} broke the trump caller and earned a defender bonus.`;
+      resultLabel = strings.scoring.brokeTrump(formatTeam(awardedTeam, locale));
     }
     if (carryBonus > 0) {
       awardedTokens += carryBonus;
-      resultLabel += ` Carry bonus applied: +${carryBonus}.`;
+      resultLabel += strings.scoring.carryApplied(carryBonus);
       carryBonus = 0;
     }
   }

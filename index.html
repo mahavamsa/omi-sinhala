@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,50 +10,57 @@
     <main class="app-shell">
       <section class="hero-panel">
         <div class="hero-copy">
-          <p class="eyebrow">Sri Lankan Trick-Taking</p>
-          <h1>Omi, rebuilt as a modern table experience.</h1>
-          <p class="hero-text">
+          <div class="hero-topline">
+            <p class="eyebrow" data-i18n="heroEyebrow">ශ්‍රී ලාංකික ට්‍රික්-ටේකින්</p>
+            <div class="language-switcher">
+              <span data-i18n="language">භාෂාව</span>
+              <button type="button" class="lang-button" data-locale-switch="si">සිංහල</button>
+              <button type="button" class="lang-button" data-locale-switch="en">English</button>
+            </div>
+          </div>
+          <h1 data-i18n="heroTitle">ඔමි, නවීන මේස අත්දැකීමක් ලෙස නැවත ගොඩනගා ඇත.</h1>
+          <p class="hero-text" data-i18n="heroText">
             Play the classic Sinhala partnership card game with smart trump choice, proper trick rules,
             and a table designed to feel ceremonial, tactile, and alive.
           </p>
           <div class="hero-tags">
-            <span>32-card deck</span>
-            <span>Choose trump after 4 cards</span>
-            <span>Race to 10 tokens</span>
+            <span data-i18n="tagDeck">කාඩ් 32 පැක්කුව</span>
+            <span data-i18n="tagTrump">කාඩ් 4කට පසු ට්‍රම්ප් තෝරන්න</span>
+            <span data-i18n="tagScore">ටෝකන් 10ට තරඟය</span>
           </div>
         </div>
 
         <div class="hero-side">
           <section class="glass-card status-card">
-            <p class="eyebrow">Match state</p>
+            <p class="eyebrow" data-i18n="matchState">තරඟ තත්ත්වය</p>
             <div class="status-grid">
               <article>
-                <span>Dealer</span>
+                <span data-i18n="dealer">ඩීලර්</span>
                 <strong id="dealer-seat">--</strong>
               </article>
               <article>
-                <span>Trump</span>
+                <span data-i18n="trump">ට්‍රම්ප්</span>
                 <strong id="trump-suit">--</strong>
               </article>
               <article>
-                <span>Lead</span>
+                <span data-i18n="lead">ඉදිරිපත් කරන අසුන</span>
                 <strong id="lead-seat">--</strong>
               </article>
               <article>
-                <span>Score to win</span>
+                <span data-i18n="scoreToWin">ජය සීමාව</span>
                 <strong>10</strong>
               </article>
             </div>
           </section>
 
           <section class="glass-card rules-card">
-            <p class="eyebrow">Core rules</p>
+            <p class="eyebrow" data-i18n="coreRules">මූලික නීති</p>
             <ul class="rules-list">
-              <li>Four players in two teams, partners sitting opposite.</li>
-              <li>Trump is chosen after each player sees only four cards.</li>
-              <li>You must follow suit if you can.</li>
-              <li>Five to seven tricks scores 1 token for trump callers, 2 for defenders.</li>
-              <li>All 8 tricks scores 3 tokens, and a 4-4 tie carries a bonus token to the next winning hand.</li>
+              <li data-i18n="rules1">ක්‍රීඩකයන් හතර දෙනා දෙකේ කණ්ඩායම් දෙකක් ලෙස විරුද්ධ අසුනේ ඉඳී.</li>
+              <li data-i18n="rules2">සෑම ක්‍රීඩකයෙකුම කාඩ් 4ක් පමණක් දුටු පසු ට්‍රම්ප් තෝරයි.</li>
+              <li data-i18n="rules3">ඔබට ඇති නම් ඒ සූට් එකට පිළිතුරු දිය යුතුය.</li>
+              <li data-i18n="rules4">ට්‍රම්ප් කියූ පැත්ත 5 සිට 7 ට්‍රික් ගත්තොත් ටෝකන් 1යි, ප්‍රතිවාදීන් එම හෑන්ඩ් එක දිනුවොත් ටෝකන් 2යි.</li>
+              <li data-i18n="rules5">ට්‍රික් 8ම ගත්තොත් ටෝකන් 3යි. 4-4 බැඳුනොත් අමතර ටෝකනය ඊළඟ දිනන හෑන්ඩ් එකට යයි.</li>
             </ul>
           </section>
         </div>
@@ -61,17 +68,17 @@
 
       <section class="hud-row">
         <article class="glass-card team-card team-south">
-          <p class="eyebrow">Your team</p>
+          <p class="eyebrow" data-i18n="yourTeam">ඔබගේ කණ්ඩායම</p>
           <strong id="team-human-score">0</strong>
           <span class="subtle" id="team-human-tricks">0 tricks this hand</span>
         </article>
         <article class="glass-card center-card">
-          <p class="eyebrow">Hand status</p>
+          <p class="eyebrow" data-i18n="handStatus">හෑන්ඩ් තත්ත්වය</p>
           <strong id="phase-label">Setting table...</strong>
           <p id="phase-copy" class="subtle">Shuffling the first hand.</p>
         </article>
         <article class="glass-card team-card team-north">
-          <p class="eyebrow">Opponents</p>
+          <p class="eyebrow" data-i18n="opponents">ප්‍රතිවාදීන්</p>
           <strong id="team-ai-score">0</strong>
           <span class="subtle" id="team-ai-tricks">0 tricks this hand</span>
         </article>
@@ -103,11 +110,11 @@
           <section class="table-center glass-card">
             <div class="table-center-top">
               <div>
-                <p class="eyebrow">Trick</p>
+                <p class="eyebrow" data-i18n="trickCount">ට්‍රික්</p>
                 <strong id="trick-count">0 / 8</strong>
               </div>
               <div>
-                <p class="eyebrow">Trump caller</p>
+                <p class="eyebrow" data-i18n="trumpCaller">ට්‍රම්ප් කියූ අසුන</p>
                 <strong id="caller-seat">--</strong>
               </div>
             </div>
@@ -122,12 +129,12 @@
             <div class="turn-banner" id="turn-banner">Preparing the first deal...</div>
 
             <div class="trump-picker" id="trump-picker" hidden>
-              <p>Choose trump from your first four cards.</p>
+              <p data-i18n="chooseTrumpPrompt">ඔබගේ පළමු කාඩ් 4 අනුව ට්‍රම්ප් තෝරන්න.</p>
               <div class="trump-actions">
-                <button type="button" data-trump="spades">Spades</button>
-                <button type="button" data-trump="hearts">Hearts</button>
-                <button type="button" data-trump="clubs">Clubs</button>
-                <button type="button" data-trump="diamonds">Diamonds</button>
+                <button type="button" data-trump="spades">ඉස්කෝප්පු</button>
+                <button type="button" data-trump="hearts">හර්ට්ස්</button>
+                <button type="button" data-trump="clubs">ක්ලබ්ස්</button>
+                <button type="button" data-trump="diamonds">ඩයමන්ඩ්ස්</button>
               </div>
             </div>
           </section>
@@ -153,29 +160,29 @@
       <section class="bottom-grid">
         <section class="glass-card console-card">
           <div class="console-header">
-            <p class="eyebrow">Table console</p>
+            <p class="eyebrow" data-i18n="tableConsole">මේස පාලකය</p>
             <div class="console-actions">
-              <button type="button" id="new-hand-button">New hand</button>
-              <button type="button" id="new-match-button">Restart match</button>
+              <button type="button" id="new-hand-button" data-i18n="newHand">නව හෑන්ඩ්</button>
+              <button type="button" id="new-match-button" data-i18n="restartMatch">තරඟය යළි අරඹන්න</button>
             </div>
           </div>
           <ol class="event-log" id="event-log"></ol>
         </section>
 
         <section class="glass-card explainer-card">
-          <p class="eyebrow">Why Omi is special</p>
+          <p class="eyebrow" data-i18n="whyOmiSpecial">ඔමි විශේෂ වන්නේ ඇයි</p>
           <div class="explainer-grid">
             <article>
-              <strong>Mid-deal trump choice</strong>
-              <p>Unlike most trick-taking games, you commit to trump with only half your hand revealed.</p>
+              <strong data-i18n="special1Title">හෑන්ඩ් මැද ට්‍රම්ප් තේරීම</strong>
+              <p data-i18n="special1Copy">බොහෝ ට්‍රික්-ටේකින් ක්‍රීඩා වලට වඩා වෙනස්ව, ඔබ අඩක් පමණක් දැක ට්‍රම්ප් තීරණය කරයි.</p>
             </article>
             <article>
-              <strong>Defender pressure</strong>
-              <p>If defenders win the hand, they score more than the trump-calling side for a normal hand.</p>
+              <strong data-i18n="special2Title">ප්‍රතිවාදී පීඩනය</strong>
+              <p data-i18n="special2Copy">ට්‍රම්ප් කියූ පාර්ශවය පැරදුනොත්, එය බිඳින පාර්ශවයට සාමාන්‍යයෙන් වැඩි ටෝකන් ලැබේ.</p>
             </article>
             <article>
-              <strong>Carry-over tension</strong>
-              <p>A 4-4 split pushes a bonus token into the next hand, which can swing a close match fast.</p>
+              <strong data-i18n="special3Title">ගැටුම් උණුසුම</strong>
+              <p data-i18n="special3Copy">4-4 බැඳීමක් අමතර ටෝකනය ඊළඟ හෑන්ඩ් එකට ගෙන යන නිසා තරඟය එකවර හැරවිය හැක.</p>
             </article>
           </div>
         </section>
