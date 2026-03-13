@@ -12,10 +12,13 @@
         <div class="hero-copy">
           <div class="hero-topline">
             <p class="eyebrow" data-i18n="heroEyebrow">ශ්‍රී ලාංකික ට්‍රික්-ටේකින්</p>
-            <div class="language-switcher">
-              <span data-i18n="language">භාෂාව</span>
-              <button type="button" class="lang-button" data-locale-switch="si">සිංහල</button>
-              <button type="button" class="lang-button" data-locale-switch="en">English</button>
+            <div class="toolbar-cluster">
+              <div class="language-switcher">
+                <span data-i18n="language">භාෂාව</span>
+                <button type="button" class="lang-button" data-locale-switch="si">සිංහල</button>
+                <button type="button" class="lang-button" data-locale-switch="en">English</button>
+              </div>
+              <button type="button" class="sound-toggle" id="sound-toggle" data-i18n="soundOn">ශබ්දය සක්‍රීය</button>
             </div>
           </div>
           <h1 data-i18n="heroTitle">ඔමි, නවීන මේස අත්දැකීමක් ලෙස නැවත ගොඩනගා ඇත.</h1>
@@ -28,6 +31,17 @@
             <span data-i18n="tagTrump">කාඩ් 4කට පසු ට්‍රම්ප් තෝරන්න</span>
             <span data-i18n="tagScore">ටෝකන් 10ට තරඟය</span>
           </div>
+
+          <section class="character-picker">
+            <div class="picker-header">
+              <div>
+                <p class="eyebrow" data-i18n="pickCharacter">ඔබගේ චරිතය තෝරන්න</p>
+                <strong id="selected-character-name">--</strong>
+              </div>
+              <span class="subtle" data-i18n="pickCharacterHint">ඔබ කැමති මේස vibe එක තෝරන්න.</span>
+            </div>
+            <div class="character-grid" id="character-grid"></div>
+          </section>
         </div>
 
         <div class="hero-side">
@@ -93,7 +107,13 @@
 
           <section class="seat north">
             <div class="seat-header">
-              <span>North</span>
+              <div class="seat-identity">
+                <div class="avatar-shell" id="north-avatar"></div>
+                <div>
+                  <span>North</span>
+                  <small class="reaction-bubble" id="north-reaction"></small>
+                </div>
+              </div>
               <small id="north-state">Waiting</small>
             </div>
             <div class="hand fan-top" id="north-hand"></div>
@@ -101,7 +121,13 @@
 
           <section class="seat west">
             <div class="seat-header">
-              <span>West</span>
+              <div class="seat-identity">
+                <div class="avatar-shell" id="west-avatar"></div>
+                <div>
+                  <span>West</span>
+                  <small class="reaction-bubble" id="west-reaction"></small>
+                </div>
+              </div>
               <small id="west-state">Waiting</small>
             </div>
             <div class="hand fan-side" id="west-hand"></div>
@@ -141,7 +167,13 @@
 
           <section class="seat east">
             <div class="seat-header">
-              <span>East</span>
+              <div class="seat-identity">
+                <div class="avatar-shell" id="east-avatar"></div>
+                <div>
+                  <span>East</span>
+                  <small class="reaction-bubble" id="east-reaction"></small>
+                </div>
+              </div>
               <small id="east-state">Waiting</small>
             </div>
             <div class="hand fan-side" id="east-hand"></div>
@@ -149,7 +181,13 @@
 
           <section class="seat south">
             <div class="seat-header">
-              <span>You</span>
+              <div class="seat-identity">
+                <div class="avatar-shell" id="south-avatar"></div>
+                <div>
+                  <span>You</span>
+                  <small class="reaction-bubble" id="south-reaction"></small>
+                </div>
+              </div>
               <small id="south-state">Waiting</small>
             </div>
             <div class="hand hand-player" id="south-hand"></div>

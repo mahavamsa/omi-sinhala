@@ -142,7 +142,7 @@ export function getLegalCards(hand, leadSuit) {
   return suited.length > 0 ? suited : hand;
 }
 
-export function playCard(handState, seat, cardId) {
+export function playCard(handState, seat, cardId, locale = DEFAULT_LOCALE) {
   const hand = handState.hands[seat];
   const card = hand.find((entry) => entry.id === cardId);
   if (!card) {
@@ -191,7 +191,7 @@ export function playCard(handState, seat, cardId) {
   };
 
   if (trickCount === 8) {
-    return scoreHand(updated);
+    return scoreHand(updated, locale);
   }
 
   return {
@@ -333,4 +333,8 @@ export function chooseAiCard(handState, seat) {
 
 export function teamLabel(team) {
   return team === "human" ? "Your team" : "Opponents";
+}
+
+export function formatTeamForLocale(team, locale = DEFAULT_LOCALE) {
+  return formatTeam(team, locale);
 }

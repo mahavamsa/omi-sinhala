@@ -18,6 +18,37 @@ import {
   setPreferredLocale
 } from "./i18n.js";
 
+const CHARACTERS = [
+  {
+    id: "saffron",
+    avatar: "🦁",
+    className: "avatar-saffron",
+    names: { si: "සැෆ්රන් සිංහයා", en: "Saffron Lion" },
+    notes: { si: "විශ්වාසයෙන් ට්‍රම්ප් කියන නායකයා.", en: "A fearless trump-calling captain." }
+  },
+  {
+    id: "lotus",
+    avatar: "🌸",
+    className: "avatar-lotus",
+    names: { si: "ලෝටස් නන්ගි", en: "Lotus Nangi" },
+    notes: { si: "ලස්සන vibe එකක් එක්ක අඩි දෙයි.", en: "Brings bright energy and sharp timing." }
+  },
+  {
+    id: "mango",
+    avatar: "🥭",
+    className: "avatar-mango",
+    names: { si: "මැන්ගෝ මල්ලි", en: "Mango Malli" },
+    notes: { si: "කැඩුවොත් හිනාවෙන්ම කැඩේ.", en: "Playful, quick, and a little chaotic." }
+  },
+  {
+    id: "kandyan",
+    avatar: "🎭",
+    className: "avatar-kandyan",
+    names: { si: "කැන්ඩියන් නළුවා", en: "Kandyan Ace" },
+    notes: { si: "මේසයම show එකක් කරන tactician.", en: "A dramatic tactician who owns the table." }
+  }
+];
+
 const handNodes = {
   south: document.querySelector("#south-hand"),
   west: document.querySelector("#west-hand"),
@@ -56,9 +87,34 @@ const newHandButton = document.querySelector("#new-hand-button");
 const newMatchButton = document.querySelector("#new-match-button");
 const localeButtons = document.querySelectorAll("[data-locale-switch]");
 const translatableNodes = document.querySelectorAll("[data-i18n]");
+const soundToggleButton = document.querySelector("#sound-toggle");
+const characterGridNode = document.querySelector("#character-grid");
+const selectedCharacterNameNode = document.querySelector("#selected-character-name");
+const avatarNodes = {
+  south: document.querySelector("#south-avatar"),
+  west: document.querySelector("#west-avatar"),
+  north: document.querySelector("#north-avatar"),
+  east: document.querySelector("#east-avatar")
+};
+const reactionNodes = {
+  south: document.querySelector("#south-reaction"),
+  west: document.querySelector("#west-reaction"),
+  north: document.querySelector("#north-reaction"),
+  east: document.querySelector("#east-reaction")
+};
 
 let currentLocale = DEFAULT_LOCALE;
 let matchState = createInitialMatch();
+let soundEnabled = true;
+let audioContext = null;
+let selectedCharacterId = CHARACTERS[0].id;
+const seatCharacters = {
+  south: CHARACTERS[0],
+  west: CHARACTERS[1],
+  north: CHARACTERS[2],
+  east: CHARACTERS[3]
+};
+const reactionTimers = {};
 
 function strings() {
   return getStrings(currentLocale);
@@ -85,6 +141,10 @@ function applyStaticTranslations() {
   localeButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.localeSwitch === currentLocale);
   });
+
+  soundToggleButton.textContent = soundEnabled ? localeStrings.static.soundOn : localeStrings.static.soundOff;
+  selectedCharacterNameNode.textContent = currentCharacter().names[currentLocale];
+  renderCharacterPicker();
 }
 
 function render() {
@@ -135,6 +195,7 @@ function render() {
   renderSeatStates();
   renderTrumpPicker();
   renderLog();
+  renderAvatars();
 }
 
 function renderHands() {
@@ -203,6 +264,91 @@ function renderLog() {
   });
 }
 
+function renderCharacterPicker() {
+  characterGridNode.innerHTML = "";
+  CHARACTERS.forEach((character) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = `character-tile ${character.id === selectedCharacterId ? "active" : ""}`;
+    button.innerHTML = `
+      <div class="character-avatar ${character.className}">${character.avatar}</div>
+      <span class="character-title">${character.names[currentLocale]}</span>
+      <span class="character-note">${character.notes[currentLocale]}</span>
+    `;
+    button.addEventListener("click", () => {
+      selectedCharacterId = character.id;
+      seatCharacters.south = character;
+      selectedCharacterNameNode.textContent = character.names[currentLocale];
+      renderCharacterPicker();
+      renderAvatars();
+      react("south", "lead");
+      playTone("pick");
+    });
+    characterGridNode.append(button);
+  });
+}
+
+function renderAvatars() {
+  for (const seat of Object.keys(avatarNodes)) {
+    const character = seatCharacters[seat];
+    avatarNodes[seat].className = `avatar-shell ${character.className}`;
+    avatarNodes[seat].textContent = character.avatar;
+  }
+}
+
+function currentCharacter() {
+  return seatCharacters.south;
+}
+
+function react(seat, type) {
+  const localeStrings = strings();
+  const pool = localeStrings.reactions[type];
+  if (!pool || pool.length === 0) {
+    return;
+  }
+  const node = reactionNodes[seat];
+  node.textContent = pool[Math.floor(Math.random() * pool.length)];
+  node.classList.add("visible");
+  window.clearTimeout(reactionTimers[seat]);
+  reactionTimers[seat] = window.setTimeout(() => {
+    node.classList.remove("visible");
+  }, 1500);
+}
+
+function getAudioContext() {
+  if (!audioContext) {
+    audioContext = new window.AudioContext();
+  }
+  return audioContext;
+}
+
+function playTone(type) {
+  if (!soundEnabled) {
+    return;
+  }
+  const context = getAudioContext();
+  const oscillator = context.createOscillator();
+  const gain = context.createGain();
+  oscillator.connect(gain);
+  gain.connect(context.destination);
+
+  const now = context.currentTime;
+  const settings = {
+    card: { frequency: 520, duration: 0.08, type: "triangle", volume: 0.03 },
+    win: { frequency: 740, duration: 0.18, type: "sine", volume: 0.04 },
+    lose: { frequency: 220, duration: 0.2, type: "sawtooth", volume: 0.025 },
+    pick: { frequency: 620, duration: 0.1, type: "triangle", volume: 0.03 },
+    trump: { frequency: 660, duration: 0.16, type: "square", volume: 0.03 }
+  }[type];
+
+  oscillator.type = settings.type;
+  oscillator.frequency.setValueAtTime(settings.frequency, now);
+  gain.gain.setValueAtTime(settings.volume, now);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + settings.duration);
+  oscillator.start(now);
+  oscillator.stop(now + settings.duration);
+}
+
 function createCardElement(card, { hidden, playable, played }) {
   const button = document.createElement(hidden ? "div" : "button");
   button.className = `card ${hidden ? "back" : ""} ${card.color === "red" ? "red" : ""} ${playable ? "playable" : ""} ${played ? "played" : ""}`;
@@ -244,6 +390,8 @@ function handlePlayerCard(cardId) {
   }
 
   addEvent(strings().dynamic.youPlayed(cardLabel(card)));
+  react("south", "lead");
+  playTone("card");
   matchState.hand = playCard(matchState.hand, "south", cardId, currentLocale);
   render();
   queueAiTurns();
@@ -253,6 +401,8 @@ function handleAiTrumpIfNeeded() {
   if (matchState.hand.stage === "choose-trump" && matchState.hand.declarerSeat !== "south") {
     const trumpSuit = chooseAiTrump(matchState.hand.hands[matchState.hand.declarerSeat]);
     addEvent(strings().dynamic.seatChoseTrump(formatSeat(matchState.hand.declarerSeat, currentLocale), formatSuit(trumpSuit, currentLocale)));
+    react(matchState.hand.declarerSeat, "trump");
+    playTone("trump");
     matchState.hand = chooseTrump(matchState.hand, trumpSuit);
     render();
   }
@@ -271,12 +421,20 @@ function queueAiTurns() {
     const seat = matchState.hand.currentTurn;
     const card = chooseAiCard(matchState.hand, seat);
     addEvent(strings().dynamic.seatPlayed(formatSeat(seat, currentLocale), cardLabel(card)));
+    react(seat, "lead");
+    playTone("card");
     matchState.hand = playCard(matchState.hand, seat, card.id, currentLocale);
     render();
 
     if (matchState.hand.stage === "hand-over") {
       if (matchState.hand.handResult) {
         addEvent(matchState.hand.handResult.resultLabel);
+        const winningSeat = matchState.hand.handResult.awardedTeam === "human" ? "south" : "west";
+        react(winningSeat, "win");
+        react(winningSeat === "south" ? "north" : "east", "win");
+        react(winningSeat === "south" ? "west" : "south", "lose");
+        react(winningSeat === "south" ? "east" : "north", "lose");
+        playTone(matchState.hand.handResult.awardedTeam === "human" ? "win" : "lose");
       }
       return;
     }
@@ -315,6 +473,8 @@ document.querySelectorAll("[data-trump]").forEach((button) => {
   button.addEventListener("click", () => {
     const trumpSuit = button.dataset.trump;
     addEvent(strings().dynamic.youChoseTrump(formatSuit(trumpSuit, currentLocale)));
+    react("south", "trump");
+    playTone("trump");
     matchState.hand = chooseTrump(matchState.hand, trumpSuit);
     render();
     queueAiTurns();
@@ -323,6 +483,21 @@ document.querySelectorAll("[data-trump]").forEach((button) => {
 
 localeButtons.forEach((button) => {
   button.addEventListener("click", () => setLocale(button.dataset.localeSwitch));
+});
+
+soundToggleButton.addEventListener("click", async () => {
+  soundEnabled = !soundEnabled;
+  if (soundEnabled) {
+    try {
+      await getAudioContext().resume();
+    } catch (error) {
+      soundEnabled = false;
+    }
+  }
+  soundToggleButton.textContent = soundEnabled ? strings().static.soundOn : strings().static.soundOff;
+  if (soundEnabled) {
+    playTone("pick");
+  }
 });
 
 newHandButton.addEventListener("click", () => {

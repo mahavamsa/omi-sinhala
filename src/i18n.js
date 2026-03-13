@@ -42,7 +42,11 @@ const STRINGS = {
       chooseTrumpPrompt: "ඔබගේ පළමු කාඩ් 4 අනුව ට්‍රම්ප් තෝරන්න.",
       language: "භාෂාව",
       english: "English",
-      sinhala: "සිංහල"
+      sinhala: "සිංහල",
+      soundOn: "ශබ්දය සක්‍රීය",
+      soundOff: "ශබ්දය නිහඬයි",
+      pickCharacter: "ඔබගේ චරිතය තෝරන්න",
+      pickCharacterHint: "ඔබ කැමති මේස vibe එක තෝරන්න."
     },
     seats: {
       south: "ඔබ",
@@ -100,6 +104,12 @@ const STRINGS = {
       defendedTrump: (team) => `${team} තම ට්‍රම්ප් කැඳවීම සාර්ථකව ආරක්ෂා කළා.`,
       brokeTrump: (team) => `${team} ට්‍රම්ප් කියූ පැත්ත බිඳ දමා ප්‍රතිවාදී බෝනස් එකත් ගත්තා.`,
       carryApplied: (count) => ` ගෙනයන බෝනස් +${count} යෙදුවා.`
+    },
+    reactions: {
+      lead: ["අපි බලමු!", "එන්නම!", "හරි පාර!"],
+      win: ["මරු!", "එය මගේ!", "අද හොඳයි!"],
+      lose: ["අප්පා!", "අඩෝ හරි නෑ!", "ඊළඟට බලමු!"],
+      trump: ["ට්‍රම්ප් මේකයි!", "මේකෙන් යමු!", "අද මේ සූට් එක!"]
     }
   },
   en: {
@@ -142,7 +152,11 @@ const STRINGS = {
       chooseTrumpPrompt: "Choose trump from your first four cards.",
       language: "Language",
       english: "English",
-      sinhala: "Sinhala"
+      sinhala: "Sinhala",
+      soundOn: "Sound on",
+      soundOff: "Sound off",
+      pickCharacter: "Pick your character",
+      pickCharacterHint: "Choose the table vibe you want to bring."
     },
     seats: {
       south: "You",
@@ -200,6 +214,12 @@ const STRINGS = {
       defendedTrump: (team) => `${team} defended their trump call.`,
       brokeTrump: (team) => `${team} broke the trump caller and earned a defender bonus.`,
       carryApplied: (count) => ` Carry bonus applied: +${count}.`
+    },
+    reactions: {
+      lead: ["Let's go!", "Watch this.", "Here we go."],
+      win: ["Nice!", "Got it!", "Too good."],
+      lose: ["Nooo!", "That stings.", "Next one."],
+      trump: ["Trump time!", "This is my suit.", "Calling it now."]
     }
   }
 };
